@@ -53,12 +53,12 @@ async def main():
         print("\nStarting movement sequence...")
 
         # Test a sequence: Zero -> Middle -> Top -> Middle -> Zero
-        test_positions = [0, 3605, 7200, 3605, 0]
+        test_positions = [0, 200, 500, 1200, 2000, 3000, 4000, 5000, 6000, 7000, 7200]
 
         for pos in test_positions:
             packet = encode_position(pos)
             print(
-                f"Commanding position: {pos} | Packet: {packet.decode('ascii').strip()}"
+                f"Commanding position: {pos} | Packet: {packet.decode('ascii').strip()} | Hex: {packet.hex()} | Binary: {' '.join(format(byte, '08b') for byte in packet)}"
             )
 
             # Send the command

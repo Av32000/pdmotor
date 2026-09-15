@@ -1,0 +1,9 @@
+[package]
+name = "pdcli"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0.104"
+pdmotor = { version = "0.1.0", path = "../pdmotor" }
+tokio = { version = "1.53.1", features = ["full"] }

@@ -1,0 +1,11 @@
+[package]
+name = "pdmotor"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0.104"
+bluer = { version = "0.17.4", features = ["bluetoothd"] }
+futures-util = "0.3.34"
+tokio = "1.53.1"
+uuid = "1.26.1"
