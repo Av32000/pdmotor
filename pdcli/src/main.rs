@@ -1,5 +1,5 @@
 use anyhow::Result;
-use pdmotor::client::PDMotor;
+use pdmotor::PDMotor;
 use tokio::io::{self, AsyncBufReadExt, BufReader};
 
 #[tokio::main]
@@ -9,9 +9,7 @@ async fn main() -> Result<()> {
     let motor = PDMotor::connect().await?;
     println!("Connected to motor: {:?}", motor.device);
 
-    let mut stdin = BufReader::new(io::stdin());
-    let mut line = String::new();
-    stdin.read_line(&mut line).await?;
+    motor.calibrate().await?;
 
     let mut stdin = BufReader::new(io::stdin());
     let mut line = String::new();
@@ -36,13 +34,7 @@ async fn main() -> Result<()> {
         match input.parse::<u16>() {
             Ok(pos) => {
                 println!("Setting position to: {}", pos);
-                let packet = pdmotor::PDMotorPacket {
-                    motor_id: '1',
-                    command_id: "00".into(),
-                    payload: pos,
-                };
-
-                if let Err(e) = motor.send_packet(packet).await {
+                if let Err(e) = motor.set_position(pos).await {
                     eprintln!("Failed to send command: {}", e);
                 }
             }
