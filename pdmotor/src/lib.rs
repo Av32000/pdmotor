@@ -1,3 +1,4 @@
+///! Small library for controlling a PDMOVIE Motor Mini via Bluetooth Low Energy (BLE)
 use std::time::Duration;
 
 use anyhow::Result;
@@ -14,6 +15,7 @@ const RX_CHAR_UUID: Uuid = Uuid::from_u128(0x0000fff2_0000_1000_8000_00805f9b34f
 
 const HANDSHAKE_PACKETS: [&[u8]; 3] = [b"@00070\n", b"@13F04\n", b"@83F0D\n"];
 
+/// Represents a connection to a PDMOVIE Motor Mini
 pub struct PDMotor {
     #[allow(dead_code)]
     session: Session,
@@ -34,6 +36,7 @@ impl Drop for PDMotor {
 }
 
 impl PDMotor {
+    /// Connects to the PDMOVIE Motor Mini and performs the handshake
     pub async fn connect() -> Result<Self> {
         let session = Session::new().await?;
 
@@ -69,6 +72,7 @@ impl PDMotor {
         })
     }
 
+    /// Sets the position of the motor (0-7200)
     pub async fn set_position(&self, pos: u16) -> Result<()> {
         self.connection_check().await?;
 
@@ -84,15 +88,15 @@ impl PDMotor {
         self.send_raw(&full_packet.into_bytes()).await
     }
 
+    /// Request motor calibration
     pub async fn calibrate(&self) -> Result<()> {
         self.connection_check().await?;
         self.send_raw(b"@0FF70\n").await
     }
 
+    /// Sends raw data to the motor
     pub async fn send_raw(&self, data: &[u8]) -> Result<()> {
         self.connection_check().await?;
-
-        println!("Sending raw data: {:?}", data);
 
         let write_options = CharacteristicWriteRequest {
             op_type: bluer::gatt::WriteOp::Request,
@@ -104,11 +108,13 @@ impl PDMotor {
         Ok(())
     }
 
+    /// Disconnects from the motor
     pub async fn disconnect(&self) -> Result<()> {
         self.device.disconnect().await?;
         Ok(())
     }
 
+    /// Checks if the device is still connected
     async fn connection_check(&self) -> Result<()> {
         if !self.device.is_connected().await? {
             anyhow::bail!("Device is not connected");
@@ -117,6 +123,7 @@ impl PDMotor {
     }
 }
 
+/// Connects to a PDMOVIE Motor Mini by discovering devices and connecting to the one with the expected name
 async fn connect_motor(session: &Session) -> Result<Device> {
     let adapter = session.default_adapter().await?;
     adapter.set_powered(true).await?;

@@ -1,7 +1,12 @@
 [package]
 name = "pdmotor"
-version = "0.1.0"
-edition = "2024"
+edition = "2021"
+version = "1.0.0"
+description = "Dead simple library to connect and control a PDMOVIE Motor Mini using BLE"
+readme = "README.md"
+repository = "https://github.com/Av32000/pdmotor"
+keywords = ["pdmovie", "follow-focus", "camera"]
+license = "Unlicense"
 
 [dependencies]
 anyhow = "1.0.104"
